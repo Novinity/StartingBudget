@@ -8,12 +8,18 @@ namespace StartingBudget.Patches {
         [HarmonyPatch(nameof(ShopHandler.InitShop))]
         [HarmonyPostfix]
         private static void InitShopPostfix(ShopHandler __instance) {
-            Plugin.Logger.LogDebug(__instance.m_RoomStats.CurrentDay);
-            Plugin.Logger.LogDebug(Plugin.BoundConfig.startingMoney.Value);
-            if (PhotonNetwork.IsMasterClient && __instance.m_RoomStats.CurrentDay == 1
+            if (!Plugin.BoundConfig.infiniteMoney.Value) {
+                Plugin.Logger.LogDebug(__instance.m_RoomStats.CurrentDay);
+                Plugin.Logger.LogDebug(Plugin.BoundConfig.startingMoney.Value);
+                if (PhotonNetwork.IsMasterClient && __instance.m_RoomStats.CurrentDay == 1
                 && !Plugin.Registered) {
-                __instance.m_RoomStats.AddMoney(Plugin.BoundConfig.startingMoney.Value);
-                Plugin.Registered = true;
+                    __instance.m_RoomStats.AddMoney(Plugin.BoundConfig.startingMoney.Value);
+                    Plugin.Registered = true;
+                }
+            } else {
+                if (PhotonNetwork.IsMasterClient) {
+                    __instance.m_RoomStats.AddMoney(2147483647 - __instance.m_RoomStats.Money);
+                }
             }
         }
     }

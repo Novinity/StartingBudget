@@ -8,6 +8,7 @@ using System.Text;
 namespace StartingBudget {
     class ModConfig {
         public readonly ConfigEntry<int> startingMoney;
+        public readonly ConfigEntry<bool> infiniteMoney;
 
         public ModConfig(ConfigFile cfg) {
             cfg.SaveOnConfigSet = false;
@@ -17,6 +18,13 @@ namespace StartingBudget {
                 "StartingMoney",
                 0,
                 "The amount of money you will start the game with"
+            );
+
+            infiniteMoney = cfg.Bind(
+                "General",
+                "InfiniteMoney",
+                false,
+                "Determines if you should have unlimited money to spend"
             );
 
             ClearOrphanedEntries(cfg);
